@@ -1,0 +1,3 @@
+rootProject.name='Broker'
+
+include ':broker-core', ':broker-lifecycle', ':sample'

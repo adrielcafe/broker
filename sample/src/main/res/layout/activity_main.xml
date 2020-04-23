@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical"
+    tools:context=".global.GlobalBrokerActivity">
+
+    <Button
+        android:id="@+id/openGlobalExample"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Global Example" />
+
+    <Button
+        android:id="@+id/openLocalExample"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:text="Local Example" />
+
+    <Button
+        android:id="@+id/openLifecycleExample"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Lifecycle Example" />
+
+</LinearLayout>
