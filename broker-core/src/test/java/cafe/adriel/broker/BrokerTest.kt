@@ -2,12 +2,16 @@ package cafe.adriel.broker
 
 import cafe.adriel.broker.util.TestCoroutineScopeRule
 import io.mockk.coVerify
+import io.mockk.slot
 import io.mockk.spyk
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import strikt.api.expectThat
+import strikt.assertions.isA
+import strikt.assertions.isEqualTo
 
-class BrokerTest {
+class BrokerTest : GlobalBroker.Publisher, GlobalBroker.Subscriber {
 
     @get:Rule
     val testScopeRule = TestCoroutineScopeRule()
@@ -23,30 +27,51 @@ class BrokerTest {
     }
 
     @Test
-    fun `when publish event then deliver to subscriber`() {
+    fun `when publish event with subscriber then deliver it`() {
         val event = TestEvent("It works!")
-        broker.subscribe(this, testScopeRule, testScopeRule.dispatcher, listenerSuccess)
-        broker.publish(event)
+        subscribe(testScopeRule, testScopeRule.dispatcher, listenerSuccess)
+        publish(event)
 
         coVerify { listenerSuccess(event) }
     }
 
     @Test
-    fun `when subscriber throws exception then publish exception event`() {
-        val event = TestEvent("Ops!")
-        broker.subscribe(this, testScopeRule, testScopeRule.dispatcher, listenerThrowError)
-        broker.subscribe(this, testScopeRule, testScopeRule.dispatcher, listenerCatchError)
-        broker.publish(event)
+    fun `when publish event without subscriber then do not deliver it`() {
+        val event = TestEvent("It works!")
+        publish(event)
 
-        coVerify { listenerThrowError(event) }
-        coVerify { listenerCatchError(any()) }
+        coVerify(inverse = true) { listenerSuccess(event) }
     }
 
-    suspend fun onEventSuccess(event: TestEvent) {}
+    @Test
+    fun `when subscriber throws exception then publish exception event`() {
+        val exceptionEventSlot = slot<BrokerExceptionEvent>()
+        val event = TestEvent("Ops!")
+        subscribe(testScopeRule, testScopeRule.dispatcher, listenerThrowError)
+        subscribe(testScopeRule, testScopeRule.dispatcher, listenerCatchError)
+        publish(event)
 
-    suspend fun onEventThrowError(event: TestEvent) { throw error("Test error") }
+        coVerify { listenerThrowError(event) }
+        coVerify { listenerCatchError(capture(exceptionEventSlot)) }
 
-    suspend fun onEventCatchError(event: BrokerExceptionEvent) {}
+        expectThat(exceptionEventSlot.captured) {
+            get(BrokerExceptionEvent::subscriber) isEqualTo this@BrokerTest
+            get(BrokerExceptionEvent::event) isEqualTo event
+            get(BrokerExceptionEvent::error).isA<IllegalStateException>()
+        }
+    }
+
+    suspend fun onEventSuccess(event: TestEvent) {
+        // Do nothing
+    }
+
+    suspend fun onEventThrowError(event: TestEvent) {
+        throw error("Test error")
+    }
+
+    suspend fun onEventCatchError(event: BrokerExceptionEvent) {
+        // Do nothing
+    }
 
     data class TestEvent(val message: String)
 }
