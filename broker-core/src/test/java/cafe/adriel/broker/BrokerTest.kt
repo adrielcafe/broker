@@ -16,14 +16,13 @@ class BrokerTest : GlobalBroker.Publisher, GlobalBroker.Subscriber {
     @get:Rule
     val testScopeRule = TestCoroutineScopeRule()
 
-    val broker = spyk(GlobalBroker)
     val listenerSuccess = spyk(::onEventSuccess)
     val listenerThrowError = spyk(::onEventThrowError)
     val listenerCatchError = spyk(::onEventCatchError)
 
     @Before
     fun setup() {
-        broker.unsubscribe(this, testScopeRule)
+        unsubscribe(testScopeRule)
     }
 
     @Test
