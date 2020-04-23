@@ -11,7 +11,7 @@
 Broker is a [Publish-Subscribe](https://en.wikipedia.org/wiki/Publish%E2%80%93subscribe_pattern) (a.k.a Pub/Sub, EventBus) library for Android and JVM built with [Coroutines](https://github.com/Kotlin/kotlinx.coroutines).
 
 <p align="center">
-    <img src="https://github.com/adrielcafe/broker/raw/master/broker-flow.png?raw=true">
+    <img src="https://github.com/adrielcafe/broker/raw/master/broker-flow.png?raw=true" style="max-width:80%;">
 </p>
 
 **Features**
@@ -24,7 +24,6 @@ Broker is a [Publish-Subscribe](https://en.wikipedia.org/wiki/Publish%E2%80%93su
 * Fast: all work is done outside the main thread and the events are delivered through a Coroutines Flow.
 
 ## Usage
-
 Take a look at the [sample app](https://github.com/adrielcafe/broker/tree/master/sample/src/main/java/cafe/adriel/broker/sample) for working examples.
 
 ### Events
@@ -164,6 +163,13 @@ class MyActivity : AppCompatActivity(), GlobalBroker.Subscriber {
             // Handle event
         }
     }
+}
+```
+
+### Error handling
+```kotlin
+subscribe<BrokerExceptionEvent>(lifecycleScope) { event ->
+    // Handle error
 }
 ```
 
