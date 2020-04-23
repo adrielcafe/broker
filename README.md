@@ -10,6 +10,10 @@
 # Broker
 Broker is a [Publish-Subscribe](https://en.wikipedia.org/wiki/Publish%E2%80%93subscribe_pattern) (a.k.a Pub/Sub, EventBus) library for Android and JVM built with [Coroutines](https://github.com/Kotlin/kotlinx.coroutines).
 
+<p align="center">
+    <img src="https://github.com/adrielcafe/broker/raw/master/broker-flow.png?raw=true">
+</p>
+
 **Features**
 * Helps to decouple your code: publishers are loosely coupled to subscribers, and don't even need to know of their existence;
 * Works great with Activity, Fragment, Service, Custom View, ViewModel...;
