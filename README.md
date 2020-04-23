@@ -11,11 +11,11 @@
 Broker is a [Publish-Subscribe](https://en.wikipedia.org/wiki/Publish%E2%80%93subscribe_pattern) (a.k.a Pub/Sub, EventBus) library for Android and JVM built with [Coroutines](https://github.com/Kotlin/kotlinx.coroutines).
 
 **Features**
-* Helps you decouple your code: publishers are loosely coupled to subscribers, and don't even need to know of their existence;
+* Helps to decouple your code: publishers are loosely coupled to subscribers, and don't even need to know of their existence;
 * Works great with Activity, Fragment, Service, Custom View, ViewModel...;
-* Provides a global instance by default and let's you create your own instances;
+* Provides a [global instance](#global-pubsub) by default and lets you create [your own instances](#local-pubsub);
 * Also provides extension functions to help avoid boilerplate code;
-* Lifecycle-aware: subscribe and unsubscribe to events automatically;
+* [Lifecycle-aware](#lifecycle-aware): subscribe and unsubscribe to events automatically;
 * Thread-safe: you can publish/subscribe from any thread;
 * Fast: all work is done outside the main thread and the events are delivered through a Coroutines Flow.
 
@@ -61,6 +61,7 @@ class MyViewModel : ViewModel() {
 }
 ```
 
+#### GlobalBroker.Publisher & GlobalBroker.Subscriber
 ```kotlin
 class MyActivity : AppCompatActivity(), GlobalBroker.Subscriber {
 
@@ -91,24 +92,16 @@ class MyViewModel : ViewModel(), GlobalBroker.Publisher {
 val myModule = module {
 
     scope<MyActivity> {
-        val broker = Broker()
+        scoped { Broker() }
 
-        // You can provide separated injections for publishing and subscribing
-        scoped<BrokerPublisher> { broker }
-
-        scoped<BrokerSubscriber> { broker }
-
-        // Or provide the broker instance directly:
-        scoped { broker }
-
-        viewModel { MyViewModel(broker = get<BrokerPublisher>()) }
+        viewModel { MyViewModel(broker = get()) }
     }
 }
 ```
 ```kotlin
 class MyActivity : AppCompatActivity() {
 
-    private val broker by instance<BrokerSubscriber>()
+    private val broker by instance<Broker>()
 
     override fun onStart() {
         super.onStart()
@@ -124,12 +117,37 @@ class MyActivity : AppCompatActivity() {
 }
 ```
 ```kotlin
-class MyViewModel(broker: BrokerPublisher) : ViewModel() {
+class MyViewModel(broker: Broker) : ViewModel() {
 
     fun doSomething() {
         broker.publish(MyEvent("Hello!"))
     }
 }
+```
+
+#### BrokerPublisher & BrokerSubscriber
+```kotlin
+val myModule = module {
+
+    scope<MyActivity> {
+        val broker = Broker()
+
+        scoped<BrokerPublisher> { broker }
+
+        scoped<BrokerSubscriber> { broker }
+
+        viewModel { MyViewModel(broker = get<BrokerPublisher>()) }
+    }
+}
+```
+```kotlin
+class MyActivity : AppCompatActivity() {
+
+    private val broker by instance<BrokerSubscriber>()
+}
+```
+```kotlin
+class MyViewModel(broker: BrokerPublisher) : ViewModel()
 ```
 
 ### Lifecycle-aware
