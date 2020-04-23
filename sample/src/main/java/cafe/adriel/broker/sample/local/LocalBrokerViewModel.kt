@@ -8,6 +8,6 @@ import cafe.adriel.broker.sample.SampleEvent
 class LocalBrokerViewModel(val broker: BrokerPublisher) : ViewModel() {
 
     fun doSomething() {
-        broker.publish(SampleEvent("Hello!"))
+        broker.publish(SampleEvent("Hello from Local Broker!"))
     }
 }

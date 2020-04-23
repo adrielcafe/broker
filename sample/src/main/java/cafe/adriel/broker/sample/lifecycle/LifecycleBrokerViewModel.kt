@@ -8,6 +8,6 @@ import cafe.adriel.broker.sample.SampleEvent
 class LifecycleBrokerViewModel : ViewModel(), GlobalBroker.Publisher {
 
     fun doSomething() {
-        publish(SampleEvent("Hello!"))
+        publish(SampleEvent("Hello from Lifecycle-aware Broker!"))
     }
 }

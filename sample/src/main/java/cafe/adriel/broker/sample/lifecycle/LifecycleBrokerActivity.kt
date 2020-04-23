@@ -6,17 +6,18 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import cafe.adriel.broker.GlobalBroker
 import cafe.adriel.broker.lifecycle.subscribe
-import cafe.adriel.broker.sample.R.layout
+import cafe.adriel.broker.sample.R
 import cafe.adriel.broker.sample.SampleEvent
 import cafe.adriel.broker.subscribe
 import kotlinx.android.synthetic.main.activity_broker.*
 
-class LifecycleBrokerActivity : AppCompatActivity(layout.activity_broker), GlobalBroker.Subscriber {
+class LifecycleBrokerActivity : AppCompatActivity(R.layout.activity_broker), GlobalBroker.Subscriber {
 
     private val viewModel by viewModels<LifecycleBrokerViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        title = "Lifecycle-aware Broker"
         publishEvent.setOnClickListener {
             viewModel.doSomething()
         }

@@ -6,13 +6,13 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import cafe.adriel.broker.Broker
-import cafe.adriel.broker.sample.R.layout
+import cafe.adriel.broker.sample.R
 import cafe.adriel.broker.sample.SampleEvent
 import cafe.adriel.broker.subscribe
 import cafe.adriel.broker.unsubscribe
 import kotlinx.android.synthetic.main.activity_broker.*
 
-class LocalBrokerActivity : AppCompatActivity(layout.activity_broker) {
+class LocalBrokerActivity : AppCompatActivity(R.layout.activity_broker) {
 
     private val broker by lazy { Broker() }
 
@@ -22,6 +22,7 @@ class LocalBrokerActivity : AppCompatActivity(layout.activity_broker) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        title = "Local Broker"
         publishEvent.setOnClickListener {
             viewModel.doSomething()
         }

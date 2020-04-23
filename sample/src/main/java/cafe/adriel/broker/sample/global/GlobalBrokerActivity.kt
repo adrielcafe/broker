@@ -6,18 +6,19 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import cafe.adriel.broker.GlobalBroker
-import cafe.adriel.broker.sample.R.layout
+import cafe.adriel.broker.sample.R
 import cafe.adriel.broker.sample.SampleEvent
 import cafe.adriel.broker.subscribe
 import cafe.adriel.broker.unsubscribe
 import kotlinx.android.synthetic.main.activity_broker.*
 
-class GlobalBrokerActivity : AppCompatActivity(layout.activity_broker), GlobalBroker.Subscriber {
+class GlobalBrokerActivity : AppCompatActivity(R.layout.activity_broker), GlobalBroker.Subscriber {
 
     private val viewModel by viewModels<GlobalBrokerViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        title = "Global Broker"
         publishEvent.setOnClickListener {
             viewModel.doSomething()
         }

@@ -8,6 +8,6 @@ import cafe.adriel.broker.sample.SampleEvent
 class GlobalBrokerViewModel : ViewModel(), GlobalBroker.Publisher {
 
     fun doSomething() {
-        publish(SampleEvent("Hello!"))
+        publish(SampleEvent("Hello from Global Broker!"))
     }
 }
