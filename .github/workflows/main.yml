@@ -9,8 +9,8 @@ jobs:
 
     steps:
     - name: Git checkout
-      uses: actions/checkout@v2.0.0
-    - name: Set up JDK 1.8
+      uses: actions/checkout@v2.1.0
+    - name: Set up JDK
       uses: actions/setup-java@v1.3.0
       with:
         java-version: 1.8
@@ -20,4 +20,5 @@ jobs:
       run: ./gradlew jacocoTestReport
     - name: Codecov
       uses: codecov/codecov-action@v1.0.6
-      token: ${{ secrets.CODECOV_TOKEN }}
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
