@@ -36,10 +36,10 @@ class BrokerTest : GlobalBroker.Publisher, GlobalBroker.Subscriber {
 
     @Test
     fun `when publish event without subscriber then do not deliver it`() {
-        val event = TestEvent("It works!")
-        publish(event)
+        subscribe(testScopeRule, testScopeRule.dispatcher, listenerSuccess)
+        publish(UnsubscribedEvent)
 
-        coVerify(inverse = true) { listenerSuccess(event) }
+        coVerify(inverse = true) { listenerSuccess(any()) }
     }
 
     @Test
@@ -73,4 +73,5 @@ class BrokerTest : GlobalBroker.Publisher, GlobalBroker.Subscriber {
     }
 
     data class TestEvent(val message: String)
+    object UnsubscribedEvent
 }
