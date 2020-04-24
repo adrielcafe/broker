@@ -23,14 +23,14 @@ internal object Version {
 
 object ProjectLib {
     const val ANDROID = "com.android.tools.build:gradle:${Version.GRADLE_ANDROID}"
-    const val KOTLIN_GRADLE = "org.jetbrains.kotlin:kotlin-gradle-plugin:${Version.KOTLIN}"
+    const val KOTLIN = "org.jetbrains.kotlin:kotlin-gradle-plugin:${Version.KOTLIN}"
     const val DETEKT = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin:${Version.GRADLE_DETEKT}"
     const val KTLINT = "org.jlleitschuh.gradle:ktlint-gradle:${Version.GRADLE_KTLINT}"
     const val JACOCO = "com.vanniktech:gradle-android-junit-jacoco-plugin:${Version.GRADLE_JACOCO}"
     const val VERSIONS = "com.github.ben-manes:gradle-versions-plugin:${Version.GRADLE_VERSIONS}"
     const val MAVEN = "com.github.dcendents:android-maven-gradle-plugin:${Version.GRADLE_MAVEN}"
 
-    val all = setOf(ANDROID, KOTLIN_GRADLE, DETEKT, KTLINT, JACOCO, VERSIONS, MAVEN)
+    val all = setOf(ANDROID, KOTLIN, DETEKT, KTLINT, JACOCO, VERSIONS, MAVEN)
 }
 
 object ModuleLib {
@@ -39,14 +39,14 @@ object ModuleLib {
     const val COROUTINES_ANDROID = "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Version.COROUTINES}"
 
     const val APP_COMPAT = "androidx.appcompat:appcompat:${Version.APP_COMPAT}"
-    const val ACTIVITY_KTX = "androidx.activity:activity-ktx:${Version.ACTIVITY}"
-    const val LIFECYCLE_VIEWMODEL_KTX = "androidx.lifecycle:lifecycle-viewmodel-ktx:${Version.LIFECYCLE}"
-    const val LIFECYCLE_COMMON = "androidx.lifecycle:lifecycle-runtime-ktx:${Version.LIFECYCLE}"
+    const val ACTIVITY = "androidx.activity:activity-ktx:${Version.ACTIVITY}"
+    const val LIFECYCLE_RUNTIME = "androidx.lifecycle:lifecycle-runtime-ktx:${Version.LIFECYCLE}"
+    const val LIFECYCLE_VIEWMODEL = "androidx.lifecycle:lifecycle-viewmodel-ktx:${Version.LIFECYCLE}"
     const val LEAK_CANARY = "com.squareup.leakcanary:leakcanary-android:${Version.LEAK_CANARY}"
 
     val brokerCore = setOf(KOTLIN, COROUTINES_CORE)
-    val brokerLifecycle = setOf(KOTLIN, COROUTINES_ANDROID, LIFECYCLE_COMMON)
-    val sample = setOf(KOTLIN, COROUTINES_ANDROID, APP_COMPAT, ACTIVITY_KTX, LIFECYCLE_VIEWMODEL_KTX)
+    val brokerLifecycle = setOf(KOTLIN, COROUTINES_ANDROID, LIFECYCLE_RUNTIME)
+    val sample = setOf(KOTLIN, COROUTINES_ANDROID, APP_COMPAT, ACTIVITY, LIFECYCLE_VIEWMODEL)
 }
 
 object TestLib {

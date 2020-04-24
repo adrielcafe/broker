@@ -14,6 +14,25 @@ Broker is a [Publish-Subscribe](https://en.wikipedia.org/wiki/Publish%E2%80%93su
     <img width="80%" src="https://github.com/adrielcafe/broker/raw/master/broker-flow.png?raw=true">
 </p>
 
+```kotlin
+class MyActivity : AppCompatActivity(), GlobalBroker.Subscriber {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        subscribe<MyEvent>(this) { event ->
+            // Handle event
+        }
+    }
+}
+
+class MyViewModel : ViewModel(), GlobalBroker.Publisher {
+
+    fun doSomething() {
+        publish(MyEvent(payload))
+    }
+}
+```
+
 **Features**
 * Helps to decouple your code: publishers are loosely coupled to subscribers, and don't even need to know of their existence;
 * Works great with Activity, Fragment, Service, Custom View, ViewModel...;
@@ -75,7 +94,7 @@ To publish events just call `GlobalBroker.publish()` passing the event as parame
 class MyViewModel : ViewModel() {
 
     fun doSomething() {
-        GlobalBroker.publish(MyEvent("Hello!"))
+        GlobalBroker.publish(MyEvent)
     }
 }
 ```
@@ -101,7 +120,7 @@ class MyActivity : AppCompatActivity(), GlobalBroker.Subscriber {
 class MyViewModel : ViewModel(), GlobalBroker.Publisher {
 
     fun doSomething() {
-        publish(SampleEvent("Hello!"))
+        publish(MyEvent)
     }
 }
 ```
@@ -143,7 +162,7 @@ class MyActivity : AppCompatActivity() {
 class MyViewModel(broker: Broker) : ViewModel() {
 
     fun doSomething() {
-        broker.publish(MyEvent("Hello!"))
+        broker.publish(MyEvent)
     }
 }
 ```
@@ -187,7 +206,7 @@ class MyActivity : AppCompatActivity(), GlobalBroker.Subscriber {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        subscribe<SampleEvent>(owner = this) { event ->
+        subscribe<MyEvent>(owner = this) { event ->
             // Handle event
         }
     }

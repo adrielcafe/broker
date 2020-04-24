@@ -31,6 +31,5 @@ inline fun <reified T : Any> GlobalBroker.Subscriber.subscribe(
     owner: LifecycleOwner,
     dispatcher: CoroutineContext = Dispatchers.Main,
     noinline onEvent: suspend (T) -> Unit
-) {
+) =
     GlobalBroker.subscribe(this, owner, dispatcher, onEvent)
-}
