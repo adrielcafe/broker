@@ -34,13 +34,13 @@ class MyViewModel : ViewModel(), GlobalBroker.Publisher {
 ```
 
 **Features**
-* Helps to decouple your code: publishers are loosely coupled to subscribers, and don't even need to know of their existence;
-* Works great with Activity, Fragment, Service, Custom View, ViewModel...;
-* Provides a [global instance](#global-pubsub) by default and lets you create [your own instances](#local-pubsub);
-* Also provides extension functions to help avoid boilerplate code;
-* [Lifecycle-aware](#lifecycle-aware): subscribe and unsubscribe to events automatically;
-* Thread-safe: you can publish/subscribe from any thread;
-* Fast: all work is done outside the main thread and the events are delivered through a Coroutines Flow.
+* Helps to decouple your code: publishers are loosely coupled to subscribers, and don't even need to know of their existence
+* Works great with Activity, Fragment, Service, Custom View, ViewModel...
+* Provides a [global instance](#global-pubsub) by default and lets you create [your own instances](#local-pubsub)
+* Also provides extension functions to help avoid boilerplate code
+* [Lifecycle-aware](#lifecycle-aware): subscribe and unsubscribe to events automatically
+* Thread-safe: you can publish/subscribe from any thread
+* Fast: all work is done outside the main thread and the events are delivered through a Coroutines Flow
 * Small: ~30kb
 
 ## Usage
