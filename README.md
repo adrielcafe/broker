@@ -41,6 +41,7 @@ class MyViewModel : ViewModel(), GlobalBroker.Publisher {
 * [Lifecycle-aware](#lifecycle-aware): subscribe and unsubscribe to events automatically;
 * Thread-safe: you can publish/subscribe from any thread;
 * Fast: all work is done outside the main thread and the events are delivered through a Coroutines Flow.
+* Small: ~30kb
 
 ## Usage
 Take a look at the [sample app](https://github.com/adrielcafe/broker/tree/master/sample/src/main/java/cafe/adriel/broker/sample) for working examples.
