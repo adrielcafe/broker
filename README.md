@@ -11,7 +11,7 @@
 Broker is a [Publish-Subscribe](https://en.wikipedia.org/wiki/Publish%E2%80%93subscribe_pattern) (a.k.a Pub/Sub, EventBus) library for Android and JVM built with [Coroutines](https://github.com/Kotlin/kotlinx.coroutines).
 
 <p align="center">
-    <img src="https://github.com/adrielcafe/broker/raw/master/broker-flow.png?raw=true" style="max-width:80%;">
+    <img width="80%" src="https://github.com/adrielcafe/broker/raw/master/broker-flow.png?raw=true">
 </p>
 
 **Features**
@@ -26,11 +26,14 @@ Broker is a [Publish-Subscribe](https://en.wikipedia.org/wiki/Publish%E2%80%93su
 ## Usage
 Take a look at the [sample app](https://github.com/adrielcafe/broker/tree/master/sample/src/main/java/cafe/adriel/broker/sample) for working examples.
 
-### Events
+### Creating events
+Events (a.k.a Topic, Message) can be represented as `object` (without payload) and `data class` (with payload).
 ```kotlin
 object EventA
 data class EventB(val message: String)
 ```
+
+You can also group your events inside a `sealed class`, this way you can organize events by module, feature, scope, or similar.
 ```kotlin
 sealed class MyEvent {
     object EventA : MyEvent()
@@ -39,6 +42,17 @@ sealed class MyEvent {
 ```
 
 ### Global Pub/Sub
+Broker provides a global instance by default with some useful extension functions.
+
+Call `GlobalBroker.subscribe<YourEvent>()` to subscribe to an event and `GlobalBroker.unsubscribe()` to unsubscribe to all events. 
+
+To subscribe, you should pass as parameters:
+* The subscriber (usually the current class but can be a `String`, `Int`, `object`...)
+* A `CoroutineScope` (tip: use the built-in [lifecycleScope and viewModelScope](https://developer.android.com/topic/libraries/architecture/coroutines))
+* An *optional* `CoroutineContext` to run your lambda (default is `Dispatchers.Main`)
+* A lambda used to handle the incoming events
+
+Call `subscribe()` in `onStart()` (for Activity and Fragment) and `onAttachedToWindow()` (for Custom View), and call `unsubscribe()` in `onStop()` (for Activity and Fragment) and `onDetachedFromWindow()` (for Custom View).
 ```kotlin
 class MyActivity : AppCompatActivity() {
 
@@ -55,6 +69,8 @@ class MyActivity : AppCompatActivity() {
     }
 }
 ```
+
+To publish events just call `GlobalBroker.publish()` passing the event as parameter. It can be called from any thread.
 ```kotlin
 class MyViewModel : ViewModel() {
 
@@ -65,6 +81,7 @@ class MyViewModel : ViewModel() {
 ```
 
 #### GlobalBroker.Publisher & GlobalBroker.Subscriber
+You can avoid some boilerplate code by implementing the `GlobalBroker.Publisher` and `GlobalBroker.Subscriber` interfaces. This also helps to identify the role of your class: is it a Publisher or Subscriber?
 ```kotlin
 class MyActivity : AppCompatActivity(), GlobalBroker.Subscriber {
 
@@ -80,8 +97,7 @@ class MyActivity : AppCompatActivity(), GlobalBroker.Subscriber {
         super.onStop()
     }
 }
-```
-```kotlin
+
 class MyViewModel : ViewModel(), GlobalBroker.Publisher {
 
     fun doSomething() {
@@ -91,6 +107,9 @@ class MyViewModel : ViewModel(), GlobalBroker.Publisher {
 ```
 
 ### Local Pub/Sub
+In some situations a global instance is not a good option, because of that you can also create your own Broker instance.
+
+In the example below, we use [Koin](https://github.com/InsertKoinIO/koin) to inject a Broker instance in the `MyActivity` scope.
 ```kotlin
 val myModule = module {
 
@@ -101,6 +120,8 @@ val myModule = module {
     }
 }
 ```
+
+And now we can inject a local Broker instance:
 ```kotlin
 class MyActivity : AppCompatActivity() {
 
@@ -118,8 +139,7 @@ class MyActivity : AppCompatActivity() {
         super.onStop()
     }
 }
-```
-```kotlin
+
 class MyViewModel(broker: Broker) : ViewModel() {
 
     fun doSomething() {
@@ -129,6 +149,9 @@ class MyViewModel(broker: Broker) : ViewModel() {
 ```
 
 #### BrokerPublisher & BrokerSubscriber
+Broker class implements two interfaces: `BrokerPublisher` and `BrokerSubscriber`. You can use this to inject only the necessary behavior into your class.
+
+Let's back to the previous example. Instead of provide a Broker instance directly we can provide two injections, one for publishers and another for subscribers.
 ```kotlin
 val myModule = module {
 
@@ -143,17 +166,22 @@ val myModule = module {
     }
 }
 ```
+
+Now we can inject only what our class needs:
 ```kotlin
 class MyActivity : AppCompatActivity() {
 
     private val broker by instance<BrokerSubscriber>()
 }
-```
-```kotlin
+
+
 class MyViewModel(broker: BrokerPublisher) : ViewModel()
 ```
 
 ### Lifecycle-aware
+Broker's subscribers can be [lifecycle-aware](https://developer.android.com/topic/libraries/architecture/lifecycle)! Works for global and local instances.
+
+Instead of subscribe in `onStart()` and unsubscribe in `onStop()` just subscribe in `onCreate()` and pass the `lifecycleOnwer` as parameter. Your events will now be automatically subscribed and unsubscribed.
 ```kotlin
 class MyActivity : AppCompatActivity(), GlobalBroker.Subscriber {
 
@@ -167,6 +195,7 @@ class MyActivity : AppCompatActivity(), GlobalBroker.Subscriber {
 ```
 
 ### Error handling
+If the subscriber's lambda throws an error, Broker will catch it and publish the event `BrokerExceptionEvent`. Just subscribe to it if you want to handle the exceptions. 
 ```kotlin
 subscribe<BrokerExceptionEvent>(lifecycleScope) { event ->
     // Handle error
@@ -196,7 +225,6 @@ dependencies {
 Current version: [![JitPack](https://img.shields.io/jitpack/v/github/adrielcafe/broker.svg?style=flat-square)](https://jitpack.io/#adrielcafe/broker)
 
 ### Platform compatibility
-
 |         | `broker-core` | `broker-lifecycle` |
 |---------|---------------|--------------------|
 | Android | ✓             | ✓                  |
