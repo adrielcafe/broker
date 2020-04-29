@@ -73,7 +73,7 @@ class BrokerTest : GlobalBroker.Publisher, GlobalBroker.Subscriber {
     @Test
     fun `when publish retained event then subscribers should receive it`() {
         val event = TestEvent("It works!")
-        subscribe(testScopeRule, testScopeRule.dispatcher, onEvent = listenerSuccess)
+        subscribe(testScopeRule, testScopeRule.dispatcher, emitRetained = false, onEvent = listenerSuccess)
         publish(event, retain = true)
         subscribe(testScopeRule, testScopeRule.dispatcher, emitRetained = true, onEvent = listenerSuccess)
 
@@ -83,11 +83,17 @@ class BrokerTest : GlobalBroker.Publisher, GlobalBroker.Subscriber {
     @Test
     fun `when remove retained event then retained event should be null`() {
         val event = TestEvent("It works!")
-        subscribe(testScopeRule, testScopeRule.dispatcher, onEvent = listenerSuccess)
         publish(event, retain = true)
         removeRetained<TestEvent>()
 
         expectThat(getRetained<TestEvent>()).isNull()
+    }
+
+    @Test
+    fun `when remove not retained event then nothing should happen`() {
+        removeRetained<UnsubscribedEvent>()
+
+        expectThat(getRetained<UnsubscribedEvent>()).isNull()
     }
 
     suspend fun onEventSuccess(event: TestEvent) {
