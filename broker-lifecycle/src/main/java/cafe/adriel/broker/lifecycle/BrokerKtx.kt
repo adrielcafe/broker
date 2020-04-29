@@ -16,13 +16,14 @@ inline fun <reified T : Any> BrokerSubscriber.subscribe(
     subscriber: Any,
     owner: LifecycleOwner,
     dispatcher: CoroutineContext = Dispatchers.Main,
+    emitRetained: Boolean = false,
     noinline onEvent: suspend (T) -> Unit
 ) =
     owner.lifecycle.addObserver(object : LifecycleEventObserver {
         override fun onStateChanged(source: LifecycleOwner, event: Event) {
             when (event) {
-                ON_START -> subscribe(subscriber, owner.lifecycleScope, dispatcher, onEvent)
-                ON_STOP -> unsubscribe(subscriber, owner.lifecycleScope)
+                ON_START -> subscribe(subscriber, owner.lifecycleScope, dispatcher, emitRetained, onEvent)
+                ON_STOP -> unsubscribe(subscriber)
             }
         }
     })
@@ -30,6 +31,7 @@ inline fun <reified T : Any> BrokerSubscriber.subscribe(
 inline fun <reified T : Any> GlobalBroker.Subscriber.subscribe(
     owner: LifecycleOwner,
     dispatcher: CoroutineContext = Dispatchers.Main,
+    emitRetained: Boolean = false,
     noinline onEvent: suspend (T) -> Unit
 ) =
-    GlobalBroker.subscribe(this, owner, dispatcher, onEvent)
+    GlobalBroker.subscribe(this, owner, dispatcher, emitRetained, onEvent)

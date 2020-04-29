@@ -12,8 +12,13 @@ interface BrokerSubscriber {
         eventClass: KClass<T>,
         scope: CoroutineScope,
         eventDispatcher: CoroutineContext = Dispatchers.Main,
+        emitRetained: Boolean = false,
         onEvent: suspend (T) -> Unit
     )
 
-    fun unsubscribe(subscriber: Any, scope: CoroutineScope)
+    fun unsubscribe(subscriber: Any)
+
+    fun <T : Any> getRetained(eventClass: KClass<T>): T?
+
+    fun <T : Any> removeRetained(eventClass: KClass<T>): T?
 }

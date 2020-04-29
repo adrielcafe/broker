@@ -26,4 +26,10 @@
         android:layout_height="wrap_content"
         android:text="Lifecycle-aware Example" />
 
+    <Button
+        android:id="@+id/openRetainedEventExample"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Retained Event Example" />
+
 </LinearLayout>

@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import cafe.adriel.broker.sample.global.GlobalBrokerActivity
 import cafe.adriel.broker.sample.lifecycle.LifecycleBrokerActivity
 import cafe.adriel.broker.sample.local.LocalBrokerActivity
+import cafe.adriel.broker.sample.retained.RetainedEventActivity
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(R.layout.activity_main) {
@@ -21,6 +22,9 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         }
         openLifecycleExample.setOnClickListener {
             start<LifecycleBrokerActivity>()
+        }
+        openRetainedEventExample.setOnClickListener {
+            start<RetainedEventActivity>()
         }
     }
 

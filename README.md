@@ -38,7 +38,7 @@ class MyViewModel : ViewModel(), GlobalBroker.Publisher {
 * Works great with Activity, Fragment, Service, Custom View, ViewModel...
 * Provides a [global instance](#global-pubsub) by default and lets you create [your own instances](#local-pubsub)
 * Also provides extension functions to help avoid boilerplate code
-* [Lifecycle-aware](#lifecycle-aware): subscribe and unsubscribe to events automatically
+* Android [Lifecycle-aware](#lifecycle-aware): subscribe and unsubscribe to events automatically
 * Thread-safe: you can publish/subscribe from any thread
 * Fast: all work is done outside the main thread and the events are delivered through a Coroutines Flow
 * Small: ~30kb

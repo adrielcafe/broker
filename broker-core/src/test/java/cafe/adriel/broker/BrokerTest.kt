@@ -10,6 +10,7 @@ import org.junit.Test
 import strikt.api.expectThat
 import strikt.assertions.isA
 import strikt.assertions.isEqualTo
+import strikt.assertions.isNull
 
 class BrokerTest : GlobalBroker.Publisher, GlobalBroker.Subscriber {
 
@@ -22,13 +23,13 @@ class BrokerTest : GlobalBroker.Publisher, GlobalBroker.Subscriber {
 
     @Before
     fun setup() {
-        unsubscribe(testScopeRule)
+        unsubscribe()
     }
 
     @Test
     fun `when publish event with subscriber then deliver it`() {
         val event = TestEvent("It works!")
-        subscribe(testScopeRule, testScopeRule.dispatcher, listenerSuccess)
+        subscribe(testScopeRule, testScopeRule.dispatcher, onEvent = listenerSuccess)
         publish(event)
 
         coVerify { listenerSuccess(event) }
@@ -36,7 +37,7 @@ class BrokerTest : GlobalBroker.Publisher, GlobalBroker.Subscriber {
 
     @Test
     fun `when publish event without subscriber then do not deliver it`() {
-        subscribe(testScopeRule, testScopeRule.dispatcher, listenerSuccess)
+        subscribe(testScopeRule, testScopeRule.dispatcher, onEvent = listenerSuccess)
         publish(UnsubscribedEvent)
 
         coVerify(inverse = true) { listenerSuccess(any()) }
@@ -46,8 +47,8 @@ class BrokerTest : GlobalBroker.Publisher, GlobalBroker.Subscriber {
     fun `when subscriber throws exception then publish exception event`() {
         val exceptionEventSlot = slot<BrokerExceptionEvent>()
         val event = TestEvent("Ops!")
-        subscribe(testScopeRule, testScopeRule.dispatcher, listenerThrowError)
-        subscribe(testScopeRule, testScopeRule.dispatcher, listenerCatchError)
+        subscribe(testScopeRule, testScopeRule.dispatcher, onEvent = listenerThrowError)
+        subscribe(testScopeRule, testScopeRule.dispatcher, onEvent = listenerCatchError)
         publish(event)
 
         coVerify { listenerThrowError(event) }
@@ -58,6 +59,35 @@ class BrokerTest : GlobalBroker.Publisher, GlobalBroker.Subscriber {
             get(BrokerExceptionEvent::event) isEqualTo event
             get(BrokerExceptionEvent::error).isA<IllegalStateException>()
         }
+    }
+
+    @Test
+    fun `when publish retained event then event should be retained`() {
+        val event = TestEvent("It works!")
+        subscribe(testScopeRule, testScopeRule.dispatcher, onEvent = listenerSuccess)
+        publish(event, retain = true)
+
+        expectThat(getRetained<TestEvent>()) isEqualTo event
+    }
+
+    @Test
+    fun `when publish retained event then subscribers should receive it`() {
+        val event = TestEvent("It works!")
+        subscribe(testScopeRule, testScopeRule.dispatcher, onEvent = listenerSuccess)
+        publish(event, retain = true)
+        subscribe(testScopeRule, testScopeRule.dispatcher, emitRetained = true, onEvent = listenerSuccess)
+
+        coVerify(exactly = 2) { listenerSuccess(event) }
+    }
+
+    @Test
+    fun `when remove retained event then retained event should be null`() {
+        val event = TestEvent("It works!")
+        subscribe(testScopeRule, testScopeRule.dispatcher, onEvent = listenerSuccess)
+        publish(event, retain = true)
+        removeRetained<TestEvent>()
+
+        expectThat(getRetained<TestEvent>()).isNull()
     }
 
     suspend fun onEventSuccess(event: TestEvent) {

@@ -9,7 +9,6 @@ import cafe.adriel.broker.Broker
 import cafe.adriel.broker.sample.R
 import cafe.adriel.broker.sample.SampleEvent
 import cafe.adriel.broker.subscribe
-import cafe.adriel.broker.unsubscribe
 import kotlinx.android.synthetic.main.activity_broker.*
 
 class LocalBrokerActivity : AppCompatActivity(R.layout.activity_broker) {
@@ -36,7 +35,7 @@ class LocalBrokerActivity : AppCompatActivity(R.layout.activity_broker) {
     }
 
     override fun onStop() {
-        broker.unsubscribe(this, lifecycleScope)
+        broker.unsubscribe(this)
         super.onStop()
     }
 }

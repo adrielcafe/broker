@@ -19,6 +19,7 @@
         <activity android:name=".global.GlobalBrokerActivity"/>
         <activity android:name=".local.LocalBrokerActivity"/>
         <activity android:name=".lifecycle.LifecycleBrokerActivity"/>
+        <activity android:name=".retained.RetainedEventActivity"/>
     </application>
 
 </manifest>
