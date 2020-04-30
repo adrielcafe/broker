@@ -38,7 +38,7 @@ class MyViewModel : ViewModel(), GlobalBroker.Publisher {
 * Works great with Activity, Fragment, Service, Custom View, ViewModel...
 * Provides a [global instance](#global-pubsub) by default and lets you create [your own instances](#local-pubsub)
 * Also provides useful extension functions to avoid boilerplate code
-* Android [Lifecycle-aware](#lifecycle-aware): subscribe and unsubscribe to events automatically
+* [Android Lifecycle-aware](#android-lifecycle-aware): subscribe and unsubscribe to events automatically
 * [Retained event](#retained-events): cache the last published events
 * Thread-safe: you can publish/subscribe from any thread
 * Fast: all work is done outside the main thread and the events are delivered through a [Coroutines Flow](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/-flow/)
@@ -259,7 +259,7 @@ dependencies {
     // Core
     implementation "com.github.adrielcafe.broker:broker-core:$currentVersion"
 
-    // Lifecycle support
+    // Android Lifecycle support
     implementation "com.github.adrielcafe.broker:broker-lifecycle:$currentVersion"
 }
 ```
