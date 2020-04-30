@@ -37,11 +37,12 @@ class MyViewModel : ViewModel(), GlobalBroker.Publisher {
 * Helps to decouple your code: publishers are loosely coupled to subscribers, and don't even need to know of their existence
 * Works great with Activity, Fragment, Service, Custom View, ViewModel...
 * Provides a [global instance](#global-pubsub) by default and lets you create [your own instances](#local-pubsub)
-* Also provides extension functions to help avoid boilerplate code
+* Also provides useful extension functions to avoid boilerplate code
 * Android [Lifecycle-aware](#lifecycle-aware): subscribe and unsubscribe to events automatically
+* [Retained event](#retained-events): cache the last published events
 * Thread-safe: you can publish/subscribe from any thread
-* Fast: all work is done outside the main thread and the events are delivered through a Coroutines Flow
-* Small: ~30kb
+* Fast: all work is done outside the main thread and the events are delivered through a [Coroutines Flow](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/-flow/)
+* Small: [~30kb](https://jitpack.io/com/github/adrielcafe/broker/broker-core/1.1.0/)
 
 ## Usage
 Take a look at the [sample app](https://github.com/adrielcafe/broker/tree/master/sample/src/main/java/cafe/adriel/broker/sample) for working examples.
@@ -84,7 +85,7 @@ class MyActivity : AppCompatActivity() {
     }
 
     override fun onStop() {
-        GlobalBroker.unsubscribe(this, lifecycleScope)
+        GlobalBroker.unsubscribe(this)
         super.onStop()
     }
 }
@@ -113,7 +114,7 @@ class MyActivity : AppCompatActivity(), GlobalBroker.Subscriber {
     }
 
     override fun onStop() {
-        unsubscribe(lifecycleScope)
+        unsubscribe()
         super.onStop()
     }
 }
@@ -155,7 +156,7 @@ class MyActivity : AppCompatActivity() {
     }
 
     override fun onStop() {
-        broker.unsubscribe(this, lifecycleScope)
+        broker.unsubscribe(this)
         super.onStop()
     }
 }
@@ -198,7 +199,7 @@ class MyActivity : AppCompatActivity() {
 class MyViewModel(broker: BrokerPublisher) : ViewModel()
 ```
 
-### Lifecycle-aware
+### Android Lifecycle-aware
 Broker's subscribers can be [lifecycle-aware](https://developer.android.com/topic/libraries/architecture/lifecycle)! Works for global and local instances.
 
 Instead of subscribe in `onStart()` and unsubscribe in `onStop()` just subscribe in `onCreate()` and pass the `lifecycleOnwer` as parameter. Your events will now be automatically subscribed and unsubscribed.
@@ -212,6 +213,26 @@ class MyActivity : AppCompatActivity(), GlobalBroker.Subscriber {
         }
     }
 }
+```
+
+### Retained Events
+It's possible to retain the last published event of a given type. Every time you subscribe to a retained event it will be emitted immediately.
+
+Just use the flags `emitRetained` when subscribing and `retain` when publishing:
+```kotlin
+subscribe<MyEvent>(this, emitRetained = true) { event ->
+    // Handle event
+}
+
+publish(MyEvent, retain = true)
+```
+
+At any moment you can query for a retained event (will return null if there are none):
+```kotlin
+val lastEvent = getRetained<SampleEvent>()
+
+// removeRetained() will also return the last retained event
+val lastEvent = removeRetained<SampleEvent>()
 ```
 
 ### Error handling
