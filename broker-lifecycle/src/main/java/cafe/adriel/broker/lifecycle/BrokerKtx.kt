@@ -13,6 +13,14 @@ import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.Dispatchers
 
 inline fun <reified T : Any> BrokerSubscriber.subscribe(
+    owner: LifecycleOwner,
+    dispatcher: CoroutineContext = Dispatchers.Main,
+    emitRetained: Boolean = false,
+    noinline onEvent: suspend (T) -> Unit
+) =
+    subscribe(owner, owner, dispatcher, emitRetained, onEvent)
+
+inline fun <reified T : Any> BrokerSubscriber.subscribe(
     subscriber: Any,
     owner: LifecycleOwner,
     dispatcher: CoroutineContext = Dispatchers.Main,

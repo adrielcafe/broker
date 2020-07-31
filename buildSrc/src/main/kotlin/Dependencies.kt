@@ -1,7 +1,7 @@
 @file:Suppress("Unused", "MayBeConstant", "MemberVisibilityCanBePrivate")
 
 internal object Version {
-    const val GRADLE_ANDROID = "3.6.2"
+    const val GRADLE_ANDROID = "4.0.1"
     const val GRADLE_DETEKT = "1.7.4"
     const val GRADLE_KTLINT = "9.2.1"
     const val GRADLE_JACOCO = "0.16.0"
@@ -9,7 +9,7 @@ internal object Version {
     const val GRADLE_MAVEN = "2.1"
 
     const val KOTLIN = "1.3.72"
-    const val COROUTINES = "1.3.5"
+    const val COROUTINES = "1.3.8"
 
     const val APP_COMPAT = "1.1.0"
     const val ACTIVITY = "1.1.0"
