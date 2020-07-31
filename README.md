@@ -38,7 +38,7 @@ class MyViewModel : ViewModel(), GlobalBroker.Publisher {
 * Works great with Activity, Fragment, Service, Custom View, ViewModel...
 * Provides a [global instance](#global-pubsub) by default and lets you create [your own instances](#local-pubsub)
 * Also provides useful extension functions to avoid boilerplate code
-* [Android Lifecycle-aware](#android-lifecycle-aware): subscribe and unsubscribe to events automatically
+* [Android Lifecycle-aware](#android-lifecycle-aware): unsubscribe to events automatically
 * [Retained event](#retained-events): cache the last published events
 * Thread-safe: you can publish/subscribe from any thread
 * Fast: all work is done outside the main thread and the events are delivered through a [Coroutines Flow](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/-flow/)
@@ -71,7 +71,7 @@ To subscribe, you should pass as parameters:
 * The subscriber (usually the current class but can be a `String`, `Int`, `object`...)
 * A `CoroutineScope` (tip: use the built-in [lifecycleScope and viewModelScope](https://developer.android.com/topic/libraries/architecture/coroutines))
 * An *optional* `CoroutineContext` to run your lambda (default is `Dispatchers.Main`)
-* A lambda used to handle the incoming events
+* A `suspend` lambda used to handle the incoming events
 
 Call `subscribe()` in `onStart()` (for Activity and Fragment) and `onAttachedToWindow()` (for Custom View), and call `unsubscribe()` in `onStop()` (for Activity and Fragment) and `onDetachedFromWindow()` (for Custom View).
 ```kotlin
@@ -202,7 +202,7 @@ class MyViewModel(broker: BrokerPublisher) : ViewModel()
 ### Android Lifecycle-aware
 Broker's subscribers can be [lifecycle-aware](https://developer.android.com/topic/libraries/architecture/lifecycle)! Works for global and local instances.
 
-Instead of subscribe in `onStart()` and unsubscribe in `onStop()` just subscribe in `onCreate()` and pass the `lifecycleOnwer` as parameter. Your events will now be automatically subscribed and unsubscribed.
+Instead of subscribe in `onStart()` and unsubscribe in `onStop()` just subscribe in `onCreate()` and pass the `lifecycleOnwer` as parameter. Your events will now be automatically unsubscribed!
 ```kotlin
 class MyActivity : AppCompatActivity(), GlobalBroker.Subscriber {
 
