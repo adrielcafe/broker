@@ -1,18 +1,30 @@
 apply plugin: 'kotlin'
 apply plugin: 'com.vanniktech.android.junit.jacoco'
-apply plugin: 'maven'
-
-group = Maven.GROUP_ID
+apply plugin: 'maven-publish'
 
 compileKotlin {
-    kotlinOptions.jvmTarget = JavaVersion.VERSION_1_8.toString()
+    kotlinOptions.jvmTarget = JavaVersion.VERSION_11.toString()
 }
+
 compileTestKotlin {
-    kotlinOptions.jvmTarget = JavaVersion.VERSION_1_8.toString()
+    kotlinOptions.jvmTarget = JavaVersion.VERSION_11.toString()
 }
 
 dependencies {
     ModuleLib.brokerCore.forEach { implementation it }
 
     TestLib.all.forEach { testImplementation it }
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.java
+
+                groupId = Maven.GROUP_ID
+                artifactId = "broker-core"
+            }
+        }
+    }
 }

@@ -1,24 +1,23 @@
 @file:Suppress("Unused", "MayBeConstant", "MemberVisibilityCanBePrivate")
 
 internal object Version {
-    const val GRADLE_ANDROID = "4.0.1"
-    const val GRADLE_DETEKT = "1.7.4"
-    const val GRADLE_KTLINT = "9.2.1"
+    const val GRADLE_ANDROID = "7.0.0"
+    const val GRADLE_DETEKT = "1.17.1"
+    const val GRADLE_KTLINT = "10.1.0"
     const val GRADLE_JACOCO = "0.16.0"
-    const val GRADLE_VERSIONS = "0.28.0"
-    const val GRADLE_MAVEN = "2.1"
+    const val GRADLE_VERSIONS = "0.39.0"
 
-    const val KOTLIN = "1.3.72"
-    const val COROUTINES = "1.3.8"
+    const val KOTLIN = "1.5.21"
+    const val COROUTINES = "1.5.1"
 
-    const val APP_COMPAT = "1.1.0"
-    const val ACTIVITY = "1.1.0"
-    const val LIFECYCLE = "2.2.0"
-    const val LEAK_CANARY = "2.2"
+    const val APP_COMPAT = "1.3.1"
+    const val ACTIVITY = "1.3.1"
+    const val LIFECYCLE = "2.3.1"
+    const val LEAK_CANARY = "2.7"
 
-    const val TEST_JUNIT = "1.1.1"
-    const val TEST_STRIKT = "0.25.0"
-    const val TEST_MOCKK = "1.9.3"
+    const val TEST_JUNIT = "1.1.3"
+    const val TEST_STRIKT = "0.31.0"
+    const val TEST_MOCKK = "1.12.0"
 }
 
 object ProjectLib {
@@ -28,9 +27,8 @@ object ProjectLib {
     const val KTLINT = "org.jlleitschuh.gradle:ktlint-gradle:${Version.GRADLE_KTLINT}"
     const val JACOCO = "com.vanniktech:gradle-android-junit-jacoco-plugin:${Version.GRADLE_JACOCO}"
     const val VERSIONS = "com.github.ben-manes:gradle-versions-plugin:${Version.GRADLE_VERSIONS}"
-    const val MAVEN = "com.github.dcendents:android-maven-gradle-plugin:${Version.GRADLE_MAVEN}"
 
-    val all = setOf(ANDROID, KOTLIN, DETEKT, KTLINT, JACOCO, VERSIONS, MAVEN)
+    val all = setOf(ANDROID, KOTLIN, DETEKT, KTLINT, JACOCO, VERSIONS)
 }
 
 object ModuleLib {

@@ -1,16 +1,16 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'maven-publish'
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 30
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 29
+        targetSdkVersion 30
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
 }
 
@@ -20,4 +20,17 @@ dependencies {
     ModuleLib.brokerLifecycle.forEach { implementation it }
 
     TestLib.all.forEach { testImplementation it }
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+
+                groupId = Maven.GROUP_ID
+                artifactId = "broker-lifecycle"
+            }
+        }
+    }
 }
