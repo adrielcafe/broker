@@ -5,12 +5,12 @@ import kotlin.coroutines.CoroutineContext
 import kotlin.reflect.KClass
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.channels.BroadcastChannel
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.channels.sendBlocking
 import kotlinx.coroutines.flow.FlowCollector
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.filter
@@ -24,15 +24,16 @@ open class Broker(
     private val dispatcher: CoroutineContext = Dispatchers.Default
 ) : BrokerPublisher, BrokerSubscriber {
 
-    private val eventChannel by lazy { BroadcastChannel<Any>(Channel.BUFFERED) }
+    private val eventFlow by lazy { MutableSharedFlow<Any>(extraBufferCapacity = Int.MAX_VALUE) }
     private val retainedEvents by lazy { ConcurrentHashMap<KClass<out Any>, Any>() }
     private val subscriberJobs by lazy { ConcurrentHashMap<Any, Set<Job>>() }
 
     override fun publish(event: Any, retain: Boolean) {
         if (retain) retainedEvents[event::class] = event
-        eventChannel.sendBlocking(event)
+        eventFlow.tryEmit(event)
     }
 
+    @OptIn(FlowPreview::class)
     override fun <T : Any> subscribe(
         subscriber: Any,
         eventClass: KClass<T>,
@@ -41,8 +42,8 @@ open class Broker(
         emitRetained: Boolean,
         onEvent: suspend (T) -> Unit
     ) {
-        val newJob = eventChannel
-            .asFlow()
+        val newJob = eventFlow
+            .asSharedFlow()
             .onStart { if (emitRetained) emitRetainedEvents() }
             .filter { event -> event::class == eventClass }
             .flatMapConcat { event ->
